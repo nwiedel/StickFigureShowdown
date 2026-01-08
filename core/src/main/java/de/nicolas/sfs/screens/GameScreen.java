@@ -2,6 +2,7 @@ package de.nicolas.sfs.screens;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ScreenUtils;
 import de.nicolas.sfs.SFS;
 import de.nicolas.sfs.resources.Assets;
 
@@ -15,6 +16,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(SFS game){
         this.game = game;
+
+        createGameArea();
     }
 
     private void createGameArea(){
@@ -29,7 +32,16 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float v) {
+        ScreenUtils.clear(1, 0, 0, 1);
 
+        // zeichnen beginnen
+        game.batch.begin();
+
+        // zeichnen
+        game.batch.draw(backgroundTexture, 0, 0);
+
+        // zeichen beenden
+        game.batch.end();
     }
 
     @Override

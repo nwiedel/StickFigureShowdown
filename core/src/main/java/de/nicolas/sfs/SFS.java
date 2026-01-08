@@ -1,17 +1,21 @@
 package de.nicolas.sfs;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.nicolas.sfs.resources.Assets;
+import de.nicolas.sfs.screens.GameScreen;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
-public class SFS extends ApplicationAdapter {
+public class SFS extends Game {
 
     public SpriteBatch batch;
     public Assets assets;
+
+    // Screens
+    public GameScreen gameScreen;
 
     @Override
     public void create() {
@@ -21,13 +25,15 @@ public class SFS extends ApplicationAdapter {
         // Lade alle Assets
         assets.load();
         assets.assetManager.finishLoading();
+
+        // GameScreen initialisieren und dahin wechseln
+        gameScreen = new GameScreen(this);
+        setScreen(gameScreen);
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.end();
+        super.render();
     }
 
     @Override
