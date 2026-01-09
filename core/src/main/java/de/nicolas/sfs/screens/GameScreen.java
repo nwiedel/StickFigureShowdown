@@ -18,14 +18,22 @@ public class GameScreen implements Screen {
     private Texture backgroundTexture;
     private Texture frontRopeTexture;
 
+    // Fighter
+    private static final float PLAYER_START_POSITION_X = 16f;
+    private static final float OPPONENT_START_POSITION_X = 51f;
+    private static final float FIGHTER_START_POSITION_Y = 15f;
+
     public GameScreen(SFS game){
         this.game = game;
 
         viewport = new ExtendViewport(GlobalVariables.WORLD_WIDTH, GlobalVariables.MIN_WORLD_HEIGHT,
             GlobalVariables.WORLD_WIDTH, 0);
 
-
         createGameArea();
+
+        // get Ready
+        game.player.getReady(PLAYER_START_POSITION_X, FIGHTER_START_POSITION_Y);
+        game.opponent.getReady(OPPONENT_START_POSITION_X, FIGHTER_START_POSITION_Y);
     }
 
     private void createGameArea(){
@@ -42,8 +50,14 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
+        // Spiel aktualisieren
+        update(delta);
+
         // dem Spritebatch mitteilen, die Camera zu benutzen!
         game.batch.setProjectionMatrix(viewport.getCamera().combined);
+
+        // Fighters zeichnen
+        renderFighters();
 
         // zeichnen beginnen
         game.batch.begin();
@@ -56,6 +70,19 @@ public class GameScreen implements Screen {
 
         // zeichen beenden
         game.batch.end();
+    }
+
+    private void renderFighters(){
+        // Spieler zeichnen
+        game.player.render(game.batch);
+
+        // Opponent zeichnen
+        game.opponent.render(game.batch);
+    }
+
+    private void update(float deltaTime){
+        game.player.update(deltaTime);
+        game.opponent.update(deltaTime);
     }
 
     @Override
