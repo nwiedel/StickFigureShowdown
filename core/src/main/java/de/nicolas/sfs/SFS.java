@@ -3,7 +3,6 @@ package de.nicolas.sfs;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 import de.nicolas.sfs.objects.Fighter;
 import de.nicolas.sfs.resources.Assets;
 import de.nicolas.sfs.screens.GameScreen;
@@ -32,13 +31,13 @@ public class SFS extends Game {
         assets.load();
         assets.assetManager.finishLoading();
 
-        // GameScreen initialisieren und dahin wechseln
-        gameScreen = new GameScreen(this);
-        setScreen(gameScreen);
-
         // Fighters initialisieren
         player = new Fighter(this, "Slim Stallone", new Color(1f, 0.2f, 0.2f, 1f));
         opponent = new Fighter(this,"Thin Disel", new Color(0.25f, 0.7f, 1f, 1f));
+
+        // GameScreen initialisieren und dahin wechseln
+        gameScreen = new GameScreen(this);
+        setScreen(gameScreen);
     }
 
     @Override

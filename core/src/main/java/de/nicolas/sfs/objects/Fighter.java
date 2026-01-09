@@ -80,6 +80,10 @@ public class Fighter {
         initializeWinAnimation(game.assets.assetManager);
     }
 
+    public Vector2 getPosition() {
+        return position;
+    }
+
     public void getReady(float positionX, float positionY){
         state = renderState = State.IDLE;
         stateTime = renderStateTime = 0f;
@@ -121,8 +125,12 @@ public class Fighter {
         batch.setColor(color);
         batch.draw(currentFrame,
             position.x, position.y,
+            currentFrame.getRegionWidth() * 0.5f * GlobalVariables.WORLD_SCALE,
+            0,
             currentFrame.getRegionWidth() * GlobalVariables.WORLD_SCALE,
-            currentFrame.getRegionHeight() * GlobalVariables.WORLD_SCALE);
+            currentFrame.getRegionHeight() * GlobalVariables.WORLD_SCALE,
+            facing, 1,
+            0);
         batch.setColor(1, 1, 1, 1);
     }
 
@@ -135,6 +143,14 @@ public class Fighter {
             renderState = state;
             renderStateTime = stateTime;
         }
+    }
+
+    public void faceLeft(){
+        facing = -1;
+    }
+
+    public void faceRight(){
+        facing = 1;
     }
 
     private void initializeBlockAnimation(AssetManager assetManager){
@@ -152,7 +168,7 @@ public class Fighter {
     private void initializeIdleAnimation(AssetManager assetManager){
         Texture spriteSheet = assetManager.get(Assets.IDLE_SPRITE_SHEET);
         TextureRegion[] frames = getAnimationFrames(spriteSheet);
-        idleAnimation = new Animation<>(0.01f, frames);
+        idleAnimation = new Animation<>(0.1f, frames);
     }
 
     private void initializeKickAnimation(AssetManager assetManager){

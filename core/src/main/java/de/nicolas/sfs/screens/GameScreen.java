@@ -1,7 +1,6 @@
 package de.nicolas.sfs.screens;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -23,7 +22,7 @@ public class GameScreen implements Screen {
     private static final float OPPONENT_START_POSITION_X = 51f;
     private static final float FIGHTER_START_POSITION_Y = 15f;
 
-    public GameScreen(SFS game){
+    public GameScreen(SFS game) {
         this.game = game;
 
         viewport = new ExtendViewport(GlobalVariables.WORLD_WIDTH, GlobalVariables.MIN_WORLD_HEIGHT,
@@ -36,7 +35,7 @@ public class GameScreen implements Screen {
         game.opponent.getReady(OPPONENT_START_POSITION_X, FIGHTER_START_POSITION_Y);
     }
 
-    private void createGameArea(){
+    private void createGameArea() {
         backgroundTexture = game.assets.assetManager.get(Assets.BACKGROUND_TEXTURE);
         frontRopeTexture = game.assets.assetManager.get(Assets.FRONT_ROPES_TEXTURE);
     }
@@ -56,9 +55,6 @@ public class GameScreen implements Screen {
         // dem Spritebatch mitteilen, die Camera zu benutzen!
         game.batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Fighters zeichnen
-        renderFighters();
-
         // zeichnen beginnen
         game.batch.begin();
 
@@ -68,11 +64,14 @@ public class GameScreen implements Screen {
             backgroundTexture.getWidth() * GlobalVariables.WORLD_SCALE,
             backgroundTexture.getHeight() * GlobalVariables.WORLD_SCALE);
 
+        // Fighters zeichnen
+        renderFighters();
+
         // zeichen beenden
         game.batch.end();
     }
 
-    private void renderFighters(){
+    private void renderFighters() {
         // Spieler zeichnen
         game.player.render(game.batch);
 
@@ -80,9 +79,17 @@ public class GameScreen implements Screen {
         game.opponent.render(game.batch);
     }
 
-    private void update(float deltaTime){
+    private void update(float deltaTime) {
         game.player.update(deltaTime);
         game.opponent.update(deltaTime);
+
+        if(game.player.getPosition().x <= game.opponent.getPosition().x){
+            game.player.faceRight();
+            game.opponent.faceLeft();
+        } else {
+            game.player.faceLeft();
+            game.opponent.faceRight();
+        }
     }
 
     @Override
