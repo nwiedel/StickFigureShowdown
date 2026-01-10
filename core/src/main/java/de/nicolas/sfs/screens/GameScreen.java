@@ -1,6 +1,6 @@
 package de.nicolas.sfs.screens;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -8,7 +8,7 @@ import de.nicolas.sfs.SFS;
 import de.nicolas.sfs.resources.Assets;
 import de.nicolas.sfs.resources.GlobalVariables;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, InputProcessor {
 
     private final SFS game;
     private final ExtendViewport viewport;
@@ -42,7 +42,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -115,5 +115,74 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+
+        if (keycode == Input.Keys.LEFT || keycode == Input.Keys.A){
+            game.player.moveLeft();
+        }else if (keycode == Input.Keys.RIGHT || keycode == Input.Keys.D){
+            game.player.moveRight();
+        }
+        if (keycode == Input.Keys.UP || keycode == Input.Keys.W){
+            game.player.moveUp();
+        }else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S){
+            game.player.moveDown();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+
+        if (keycode == Input.Keys.LEFT || keycode == Input.Keys.A){
+            game.player.stopMovingLeft();
+        }else if (keycode == Input.Keys.RIGHT || keycode == Input.Keys.D){
+            game.player.stopMovingRight();
+        }
+        if (keycode == Input.Keys.UP || keycode == Input.Keys.W){
+            game.player.stopMovingUP();
+        }else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S){
+            game.player.stopMovingDown();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchCancelled(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int i, int i1) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float v, float v1) {
+        return false;
     }
 }
