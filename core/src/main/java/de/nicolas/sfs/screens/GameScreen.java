@@ -2,6 +2,7 @@ package de.nicolas.sfs.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import de.nicolas.sfs.SFS;
@@ -16,6 +17,11 @@ public class GameScreen implements Screen, InputProcessor {
     // Hintergrund/ Ring
     private Texture backgroundTexture;
     private Texture frontRopeTexture;
+    private static final float RING_MIN_X = 7f;
+    private static final float RING_MAX_X = 60f;
+    private static final float RING_MIN_Y = 4f;
+    private static final float RING_MAX_Y = 22f;
+    private static final float RING_SLOPE = 3.16f;
 
     // Fighter
     private static final float PLAYER_START_POSITION_X = 16f;
@@ -67,16 +73,30 @@ public class GameScreen implements Screen, InputProcessor {
         // Fighters zeichnen
         renderFighters();
 
+        // vordere Ringbegrenzung zeichnen
+        game.batch.draw(frontRopeTexture,
+            0, 0,
+            frontRopeTexture.getWidth() * GlobalVariables.WORLD_SCALE,
+            frontRopeTexture.getHeight() * GlobalVariables.WORLD_SCALE);
+
         // zeichen beenden
         game.batch.end();
     }
 
     private void renderFighters() {
-        // Spieler zeichnen
-        game.player.render(game.batch);
+        // Y Koordinate benutzen, um zu entscheiden, welcher Fighter zuerst gezeichent wird
+        if (game.player.getPosition().y > game.opponent.getPosition().y){
+            // Spieler zeichnen
+            game.player.render(game.batch);
+            // Opponent zeichnen
+            game.opponent.render(game.batch);
+        } else {
+            // Opponent zeichnen
+            game.opponent.render(game.batch);
+            // Spieler zeichnen
+            game.player.render(game.batch);
 
-        // Opponent zeichnen
-        game.opponent.render(game.batch);
+        }
     }
 
     private void update(float deltaTime) {
@@ -89,6 +109,23 @@ public class GameScreen implements Screen, InputProcessor {
         } else {
             game.player.faceLeft();
             game.opponent.faceRight();
+        }
+
+        // Die Fighter im Ring halten
+        keepWithinRingBounds(game.player.getPosition());
+        keepWithinRingBounds(game.opponent.getPosition());
+    }
+
+    private void keepWithinRingBounds(Vector2 position){
+        if(position.y < RING_MIN_Y){
+            position.y = RING_MIN_Y;
+        }else if (position.y > RING_MAX_Y){
+            position.y = RING_MAX_Y;
+        }
+        if (position.x < position.y / RING_SLOPE + RING_MIN_X){
+            position.x = position.y / RING_SLOPE + RING_MIN_X;
+        } else if (position.x > position.y / -RING_SLOPE + RING_MAX_X){
+            position.x = position.y / -RING_SLOPE + RING_MAX_X;
         }
     }
 
@@ -131,6 +168,15 @@ public class GameScreen implements Screen, InputProcessor {
             game.player.moveDown();
         }
 
+        // kämpfen
+        if (keycode == Input.Keys.B){
+            game.player.block();
+        } else if (keycode == Input.Keys.F){
+            game.player.punch();
+        } else if (keycode == Input.Keys.V){
+            game.player.kick();
+        }
+
         return true;
     }
 
@@ -146,6 +192,11 @@ public class GameScreen implements Screen, InputProcessor {
             game.player.stopMovingUP();
         }else if (keycode == Input.Keys.DOWN || keycode == Input.Keys.S){
             game.player.stopMovingDown();
+        }
+
+        // Blocking
+        if (keycode == Input.Keys.B){
+            game.player.stopBlocking();
         }
 
         return true;

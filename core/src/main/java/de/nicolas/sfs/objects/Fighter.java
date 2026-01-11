@@ -147,6 +147,14 @@ public class Fighter {
         if (state == State.WALK){
             position.x += movementDirection.x * MOVEMENT_SPEED * deltaTime;
             position.y += movementDirection.y * MOVEMENT_SPEED * deltaTime;
+        } else if ((state == State.PUNCH && punchAnimation.isAnimationFinished(stateTime)) ||
+                    state == State.KICK && kickAnimation.isAnimationFinished(stateTime)){
+            // wenn eine Bewegungsrichtung gegeben ist -> walk - sonst idle
+            if(movementDirection.x != 0 || movementDirection.y != 0){
+                changeState(State.WALK);
+            } else {
+                changeState(State.IDLE);
+            }
         }
     }
 
@@ -195,7 +203,7 @@ public class Fighter {
     }
 
     public void stopMovingRight(){
-        if (movementDirection.x == -1){
+        if (movementDirection.x == 1){
             setMovement(0, movementDirection.y);
         }
     }
@@ -210,6 +218,43 @@ public class Fighter {
         if (movementDirection.y == -1){
             setMovement(movementDirection.x, 0);
         }
+    }
+
+    public void block(){
+        if (state == State.IDLE || state == State.WALK){
+            changeState(State.BLOCK);
+        }
+    }
+
+    public void stopBlocking(){
+        if (state == State.BLOCK){
+            // wenn eine Bewegungsrichtung gegeben ist -> walk - sonst idle
+            if(movementDirection.x != 0 || movementDirection.y != 0){
+                changeState(State.WALK);
+            } else {
+                changeState(State.IDLE);
+            }
+        }
+    }
+
+    public boolean isBlocking(){
+        return state == State.BLOCK;
+    }
+
+    public void punch(){
+        if (state == State.IDLE || state == State.WALK){
+            changeState(State.PUNCH);
+        }
+    }
+
+    public void kick(){
+        if (state == State.IDLE || state == State.WALK){
+            changeState(State.KICK);
+        }
+    }
+
+    public boolean isAttacking(){
+        return state == State.PUNCH || state == State.KICK;
     }
 
     private void initializeBlockAnimation(AssetManager assetManager){
