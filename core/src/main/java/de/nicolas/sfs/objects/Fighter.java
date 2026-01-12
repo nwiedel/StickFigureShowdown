@@ -244,13 +244,47 @@ public class Fighter {
     public void punch(){
         if (state == State.IDLE || state == State.WALK){
             changeState(State.PUNCH);
+
+            // gerade begonnen, noch kein Kontakt erfolgt
+            madeContact = false;
         }
     }
 
     public void kick(){
         if (state == State.IDLE || state == State.WALK){
             changeState(State.KICK);
+
+            // gerade begonnen, noch kein Kontakt erfolgt
+            madeContact = false;
         }
+    }
+
+    public void makeContact(){
+        madeContact = true;
+    }
+
+    public boolean hasMadeContact(){
+        return madeContact;
+    }
+
+    public boolean isAttackActive(){
+        // der Angriff ist nur aktiv, wenn noch kein Angriff stattgefunden hat und der Angriff
+        // nicht gerade begonnen hat oder beendet wird.
+        if (hasMadeContact()){
+            return false;
+        } else if (state == State.PUNCH){
+            return stateTime > punchAnimation.getAnimationDuration() * 0.33f &&
+                stateTime < punchAnimation.getAnimationDuration() * 0.66f;
+        }else if (state == State.KICK){
+            return stateTime > kickAnimation.getAnimationDuration() * 0.33f &&
+                stateTime < kickAnimation.getAnimationDuration() * 0.66f;
+        }else {
+            return false;
+        }
+    }
+
+    public void getHit(float damage){
+        
     }
 
     public boolean isAttacking(){
