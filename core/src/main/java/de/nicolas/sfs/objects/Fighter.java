@@ -148,7 +148,8 @@ public class Fighter {
             position.x += movementDirection.x * MOVEMENT_SPEED * deltaTime;
             position.y += movementDirection.y * MOVEMENT_SPEED * deltaTime;
         } else if ((state == State.PUNCH && punchAnimation.isAnimationFinished(stateTime)) ||
-                    state == State.KICK && kickAnimation.isAnimationFinished(stateTime)){
+            (state == State.KICK && kickAnimation.isAnimationFinished(stateTime)) ||
+            (state == State.HURT && hurtAnimation.isAnimationFinished(stateTime))){
             // wenn eine Bewegungsrichtung gegeben ist -> walk - sonst idle
             if(movementDirection.x != 0 || movementDirection.y != 0){
                 changeState(State.WALK);
@@ -267,6 +268,10 @@ public class Fighter {
         return madeContact;
     }
 
+    public boolean isAttacking(){
+        return state == State.PUNCH || state == State.KICK;
+    }
+
     public boolean isAttackActive(){
         // der Angriff ist nur aktiv, wenn noch kein Angriff stattgefunden hat und der Angriff
         // nicht gerade begonnen hat oder beendet wird.
@@ -284,11 +289,21 @@ public class Fighter {
     }
 
     public void getHit(float damage){
-        
+        if (state == State.HURT || state == State.WIN || state == State.LOSE){
+            return;
+        }
+        // Leben wird reduziert, wenn geblockt wird um einen geringeren Betrag
+        life -= state == State.BLOCK ? damage * BLOCK_DAMAGE_FACTOR : damage;
+        if(life <= 0f){
+            lose();
+        } else if (state != State.BLOCK){
+            changeState(State.HURT);
+        }
     }
 
-    public boolean isAttacking(){
-        return state == State.PUNCH || state == State.KICK;
+    public void lose(){
+        changeState(State.LOSE);
+        life = 0;
     }
 
     private void initializeBlockAnimation(AssetManager assetManager){
