@@ -27,6 +27,8 @@ public class GameScreen implements Screen, InputProcessor {
     private static final float PLAYER_START_POSITION_X = 16f;
     private static final float OPPONENT_START_POSITION_X = 51f;
     private static final float FIGHTER_START_POSITION_Y = 15f;
+    private static final float FIGHTER_CONTACT_DISTANCE_X = 7.5f;
+    private static final float FIGHTER_CONTACT_DISTANCE_Y = 1.5f;
 
     public GameScreen(SFS game) {
         this.game = game;
@@ -127,6 +129,12 @@ public class GameScreen implements Screen, InputProcessor {
         } else if (position.x > position.y / -RING_SLOPE + RING_MAX_X){
             position.x = position.y / -RING_SLOPE + RING_MAX_X;
         }
+    }
+
+    private boolean areWithinContacDistance(Vector2 position1, Vector2 position2){
+        float xDistance = Math.abs(position1.x - position2.x);
+        float yDistance = Math.abs(position1.y - position2.y);
+        return xDistance <= FIGHTER_CONTACT_DISTANCE_X && yDistance <= FIGHTER_CONTACT_DISTANCE_Y;
     }
 
     @Override
